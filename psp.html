@@ -1,0 +1,121 @@
+<HTML>
+
+
+
+<HEAD>
+
+<TITLE>PIC Serial Protocol</TITLE>
+
+<STYLE>
+
+ P{text-indent:10px;margin-left:10px;margin-top:5px;line-height:25px}
+
+ B{font-weight:normal;background-color:lightpink}
+
+ DL{text-indent:10px;margin-left:10px;margin-top:5px;line-height:25px}
+
+ LI{text-indent:10px;margin-left:10px;margin-top:5px;line-height:25px;font-weight:bold}
+
+ H2{text-indent:20px;font-size:20pt;line-height:40pt;background-color:beige;border-color:red;border-style:solid;border-style:solid;border-width:0px 0px 0px 40px}
+
+ H3{text-indent:20px;margin-left:10px;font-size:16pt;background-color:beige;border-color:blue;border-style:solid;border-width:0px 0px 0px 20px}
+
+ H4{text-indent:20px;margin-left:20px;font-size:12pt;background-color:beige;border-color:grey;border-style:solid;border-width:0px 0px 0px 20px}
+
+</STYLE>
+
+</HEAD>
+
+
+
+<BODY>
+
+
+
+<h2>PICシリアル通信プロトコル</h2>
+
+<p>適用範囲はPIC１６＊６２＊系など、シリアルI/Oを搭載したPICとする。
+
+
+
+<h3>Protocol-0/Transmission Request/PC&rarr;PIC</h3>
+
+<table border>
+
+ <tr><td colspan="3">1st byte<td>2nd byte
+
+ <tr><td height="50">・・<td>・・<td>・・・・<td>・・・・・・・・<td bgcolor="gray"><font color="white">Min. blank 1/100s</font>
+
+ <tr><td rowspan="3" valign="top">│<br>│<br>│<br>│<br>│<br>└<td rowspan="2" valign="top">│<br>│<br>└<td colspan="2" align="right">└───<td>Address 12bits
+
+ <tr><td colspan="3">00:FileReg<br>01:EE-Rom<br>10:DebugReg
+
+ <tr><td colspan="4">00:Transmission Requst
+
+</table>
+
+
+
+<h3>Protocol-1/Write Request/PC&rarr;PIC</h3>
+
+<table border>
+
+ <tr><td colspan="3">1st byte<td>2nd byte<td>3rd byte
+
+ <tr><td height="50">・・<td>・・<td>・・・・<td>・・・・・・・・<td>・・・・・・・・<td bgcolor="gray"><font color="white">Min. blank 1/100s</font>
+
+ <tr><td rowspan="4" valign="top">│<br>│<br>│<br>│<br>│<br>│<br>│<br>└<td rowspan="3" valign="top">│<br>│<br>│<br>│<br>└<td rowspan="2" colspan="2" align="right" valign="top">│<br>│<br>└<td align="right">└──<td>Data 8bits
+
+ <tr><td colspan="2">Address 12bits
+
+ <tr><td colspan="4">00:FileReg<br>01:EE-Rom
+
+ <tr><td colspan="5">01:One Data Write Request
+
+</table>
+
+
+<h3>Protocol-2/One Data Transmission/PIC&rarr;PC</h3>
+
+<table border>
+
+ <tr><td colspan="3">1st byte<td>2nd byte<td>3rd byte
+
+ <tr><td height="50">・・<td>・・<td>・・・・<td>・・・・・・・・<td>・・・・・・・・<td bgcolor="gray"><font color="white">Min. blank 1/100s</font>
+
+ <tr><td rowspan="4" valign="top">│<br>│<br>│<br>│<br>│<br>│<br>│<br>└<td rowspan="3" valign="top">│<br>│<br>│<br>│<br>└<td rowspan="2" colspan="2" align="right" valign="top">│<br>│<br>└<td align="right">└──<td>Data 8bits
+
+ <tr><td colspan="2">Address 12bits
+
+ <tr><td colspan="4">00:FileReg<br>01:EE-Rom
+
+ <tr><td colspan="5">10:One data trasmission
+
+</table>
+
+
+<h3>Protocol-3/N Data Transmission/PIC&rarr;PC</h3>
+
+<table border>
+
+ <tr><td colspan="3">1st byte<td>2nd byte<td>3rd byte<td>4th byte<td colspan="2">
+
+ <tr><td height="50">・・<td>・・<td>・・・・<td>・・・・・・・・<td>・・・・・・・・<td>・・・・・・・・<td>・・・・・・・・・・・・・・・・<td bgcolor="gray"><font color="white">Min. blank 1s</font>
+
+ <tr><td rowspan="4" valign="top">│<br>│<br>│<br>│<br>│<br>│<br>│<br>└<td rowspan="3" valign="top">│<br>│<br>│<br>│<br>└<td rowspan="2" colspan="2" align="right" valign="top">│<br>│<br>└<td align="center" colspan="3">N bytes of Data 8bits
+
+ <tr><td colspan="2">Start Address
+
+ <tr><td colspan="4">00:FileReg<br>01:EE-Rom<br>10:DebugReg
+
+ <tr><td colspan="5">11:Start of N data trasmission
+
+
+
+</BODY>
+
+
+
+</HTML>
+
+ 

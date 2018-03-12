@@ -1,0 +1,68 @@
+﻿<html>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+<script src="jquery.min.js"></script>
+<script src="cawclient.js" type="text/javascript"></script>
+<link rel="stylesheet" type="text/css" href="ca.css" />
+
+<body>
+<button id="reload" class="shared">RELOAD</button>
+<button id="write" class="shared">WRITE</button>
+
+<div style="width:95%;height:80%">
+<div id="data" style="width:30%;height:100%;float:left;overflow:scroll">
+<table id="rom" border></table>
+</div>
+<div style="width:70%;float:right">
+<canvas id="plot" style="width:100%;height:100%;background-color:ivory" ></canvas>
+</div>
+</div>
+
+</body>
+<script type="text/javascript">
+var canvas,context,cwidth,cheight;
+var ws={};
+$(document).ready(function(){
+	const column=4;
+	let tbl='';
+	for(let i=0;i<256/column;i++){
+		let row=column*i;
+		tbl+='<tr><td style="width:15%" align="right">'+row+'</td>';
+		for(let j=0;j<column;j++){
+			let idx=row+j;
+			tbl+='<td style="width:17%"><input type="number" style="width:100%;" maxlength="3"></input></td>';
+		}
+		tbl+='</tr>';
+	}
+	canvas=$("#plot").get(0);
+	context=canvas.getContext('2d');
+	cwidth=canvas.width;
+	cheight=canvas.height;
+	context.clearRect(0,0,cwidth,cheight);
+	$('#rom').append(tbl);
+	ws=new WsShare("ws://localhost:5000",function(ws){
+		$('.shared').click(function(e){
+			let id=$(e.target).attr('id');
+			ws.send('{"'+id+'":"click"}');
+		});
+		$('#rom input').change(function(e){
+			let en=$('#rom input').index(e.target);
+			let tg=$(e.target);
+			ws.sendObject({queue:{'address':en,'value':tg.val()}});
+			tg.css({'color':'red'});
+		});
+		ws.rom=function(dat){
+			for(var key in dat){
+				$('#rom input').eq(key).val(dat[key]);
+			}
+		}
+		ws.ram=function(dat){
+			let e=$('#rom input').eq(dat.address);
+			e.val(dat.value);
+			e.css({'color':''});
+		}
+	});
+});
+
+</script>
+
+</html>
