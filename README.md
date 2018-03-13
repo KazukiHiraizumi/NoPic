@@ -12,9 +12,7 @@ PIC serial monitor powered by Node.js
  NodeJSは様々なライブラリ(パッケージ)が配布されています。パッケージをインストールするには
 npmというツールを使います。以下のパッケージが必要です。
 
--- ws
--- seriaport
--- http-server
+- ws, seriaport, http-server
 
  各パッケージの説明は https://www.npmjs.com/ で探せます。
 
@@ -56,7 +54,7 @@ Hit CTRL-C to stop the server
 ~~~
 node backend.js
 ~~~
-接続されたかどうかは[ブルートゥース設定](blueman.png)で確認する。
+接続されたかどうかはブルートゥース設定で確認する。<img src="blueman.png" style="float:right;" />
 
 
 ## フロントエンドの起動
