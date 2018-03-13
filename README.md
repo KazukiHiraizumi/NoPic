@@ -38,7 +38,7 @@ cd %HOMEPATH%\NoPIC
 ~~~
 4. Httpdの実行
 ~~~
-node %HOMEPATH%\http-server\bin\http-server
+node %HOMEPATH%\node_modules\http-server\bin\http-server
 ~~~
  セキュリティ警告が出た場合は、許可するを選択する。
  正常に起動できたら以下のメッセージが表示される
@@ -54,8 +54,8 @@ Hit CTRL-C to stop the server
 ~~~
 node backend.js
 ~~~
-接続されたかどうかはブルートゥース設定で確認する。<img src="blueman.png" style="float:right;" />
-
+<img src="blueman.png" style="width:100px;" /><br clear="all">
+接続されたかどうかは「Bluetooth設定」で確認する。「Bluetooth設定」の「接続」メニューは使わない方がよい。
 
 ## フロントエンドの起動
 1. Webブラウザで http://localhost:8080/ に接続する。
