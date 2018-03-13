@@ -3,9 +3,8 @@
 'use strict';
 const ws=require('./cawserver.js').listen(5000);
 const serialport=require('serialport');
-const Canvas=require('canvas');
 
-const comm=new serialport('/dev/ttyUSB0',{
+const comm=new serialport('com40',{
 	baudRate:19200,
 	dataBits:8,
 	parity:'none',
@@ -16,7 +15,7 @@ var commBuf=new Uint8Array();
 var commWdt=100;
 var commWid=0;
 comm.on('open',function(){
-	console.log('comm opened');
+	console.log('[serialport message]Open');
 });
 comm.on('data',function(data){
 	if(commWid!=0) clearTimeout(commWid);
@@ -25,7 +24,6 @@ comm.on('data',function(data){
 	a.set(data,commBuf.byteLength);
 	commBuf=a;
 	commWid=setTimeout(function(){
-		console.log('Rx:'+commBuf);
 		psp_parse(commBuf);
 		commBuf=new Uint8Array();
 		commWdt=100;
@@ -37,7 +35,6 @@ comm.on('data',function(data){
 var psp_wbuf=new Array(); //write queue
 
 ws.reload=function(){
-	console.log('ws.reload');
 	var dat=new Uint8Array(2);
 	dat[0]=0x20;//cmd
 	dat[1]=0x00;//address
@@ -53,7 +50,6 @@ function psp_parse(dat){
 	switch(dat[0]&0xf0){
 	case 0x20:
 	case 0xe0:
-		console.log('client send:'+dat.byteLength);
 		switch(dat[1]){
 		case 0:
 			ws._client.sendObject({'rom':dat.subarray(2)});
@@ -68,7 +64,7 @@ function psp_parse(dat){
 		ws._client.sendObject({'ram':{'address':dat[1],'value':dat[2]}});
 		break;
 	default:
-		console.log('psp:'+dat[0]);
+		console.log('[PSP error]'+dat[0]);
 	}
 }
 

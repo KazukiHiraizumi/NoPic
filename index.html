@@ -47,7 +47,10 @@ $(document).ready(function(){
 		$('#rom input').change(function(e){
 			let en=$('#rom input').index(e.target);
 			let tg=$(e.target);
-			ws.sendObject({queue:{'address':en,'value':tg.val()}});
+			let v=tg.val();
+			if(v>255) tg.val(v=255);
+			else if(v<0) tg.val(v=0);
+			ws.sendObject({queue:{'address':en,'value':v}});
 			tg.css({'color':'red'});
 		});
 		ws.rom=function(dat){
@@ -60,6 +63,9 @@ $(document).ready(function(){
 			e.val(dat.value);
 			e.css({'color':''});
 		}
+	});
+	$('#reload').click(function(){
+		$('#rom input').val(0);
 	});
 });
 
