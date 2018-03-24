@@ -1,0 +1,1 @@
+node %HOMEPATH%\node_modules\http-server\bin\http-server
