@@ -19,8 +19,8 @@
 
 </body>
 <script type="text/javascript">
-var canvas,context,cwidth,cheight;
-var ws={};
+let canvas,context,cwidth,cheight;
+let ws={};
 $(document).ready(function(){
 	const column=4;
 	let tbl='';
@@ -38,6 +38,7 @@ $(document).ready(function(){
 	cwidth=canvas.width;
 	cheight=canvas.height;
 	context.clearRect(0,0,cwidth,cheight);
+	drawGrid(10,5);
 	$('#rom').append(tbl);
 	ws=new WsShare("ws://localhost:5000",function(ws){
 		$('.shared').click(function(e){
@@ -63,11 +64,47 @@ $(document).ready(function(){
 			e.val(dat.value);
 			e.css({'color':''});
 		}
+		ws.graph=function(dat){
+			drawGrid(10,5);
+			drawGraph(dat.x,dat.y1,0,4000,0,5*1000,'green');
+			drawGraph(dat.x,dat.y2,0,4000,-3*128,2*128,'blue');
+			drawGraph(dat.x,dat.y3,0,4000,-2*100,3*100,'red');
+		}
 	});
 	$('#reload').click(function(){
 		$('#rom input').val(0);
 	});
 });
+
+drawGrid=function(xn,yn){
+	context.clearRect(0,0,cwidth,cheight);
+	context.lineWidth=1.0;
+	context.strokeStyle='#444444';
+	for(var i=0;i<xn;i++){
+		context.beginPath();
+		context.moveTo(cwidth/xn*i,0);
+		context.lineTo(cwidth/xn*i,cheight);
+		context.stroke();
+	}
+	for(var i=0;i<yn;i++){
+		context.beginPath();
+		context.moveTo(0,cheight/yn*i);
+		context.lineTo(cwidth,cheight/yn*i);
+		context.stroke();
+	}
+}
+drawGraph=function(xw,yw,x1,x2,y1,y2,col){
+	context.lineWidth=1.0;
+	context.strokeStyle=col;
+	context.beginPath();
+	for(var i=0;i<xw.length;i++){
+		var x=(xw[i]-x1)/(x2-x1)*cwidth;
+		var y=cheight-(yw[i]-y1)/(y2-y1)*cheight;
+		if(i==0) context.moveTo(x,y);
+		else context.lineTo(x,y);
+	}
+	context.stroke();
+}
 
 </script>
 
