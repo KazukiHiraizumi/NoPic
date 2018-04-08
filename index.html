@@ -7,6 +7,7 @@
 <body>
 <button id="reload" class="shared">RELOAD</button>
 <button id="write" class="shared">WRITE</button>
+<input id="status" value="接続OK" readonly></input>
 
 <div style="width:95%;height:80%">
 <div id="data" style="width:30%;height:100%;float:left;overflow:scroll">
@@ -65,10 +66,18 @@ $(document).ready(function(){
 			e.css({'color':''});
 		}
 		ws.graph=function(dat){
+			let x=JSON.parse(dat.x);
+			let y1=JSON.parse(dat.y1);
+			let y2=JSON.parse(dat.y2);
+			let y3=JSON.parse(dat.y3);
 			drawGrid(10,5);
-			drawGraph(dat.x,dat.y1,0,4000,0,5*1000,'green');
-			drawGraph(dat.x,dat.y2,0,4000,-3*128,2*128,'blue');
-			drawGraph(dat.x,dat.y3,0,4000,-2*100,3*100,'red');
+			drawGraph(x,y1,0,4000,0,5*1000,'green');
+			drawGraph(x,y2,0,4000,-3*128,2*128,'blue');
+			drawGraph(x,y3,0,4000,-2*100,3*100,'red');
+		}
+		ws.com=function(stat){
+			$('#status').val(stat? '接続OK':'接続NG');
+			$('#status').css({'color':stat? 'auto':'red'});
 		}
 	});
 	$('#reload').click(function(){

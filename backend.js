@@ -10,12 +10,23 @@ const comm=new serialport('com40',{
 	parity:'none',
 	stopBits:1,
 	flowControl:false
+},
+function(err){
+	if(err!=null){
+		console.log('Serialport error:'+err);
+		process.exit(1);
+	}
 });
-var commBuf=new Uint8Array();
-var commWdt=100;
-var commWid=0;
+
+let commBuf=new Uint8Array();
+let commWdt=100;
+let commWid=0;
 comm.on('open',function(){
 	console.log('[serialport message]Open');
+});
+comm.on('close',function(){
+	console.log('[serialport message]Closed');
+	ws._client.sendObject({'com':false});
 });
 comm.on('data',function(data){
 	if(commWid!=0) clearTimeout(commWid);
@@ -32,7 +43,7 @@ comm.on('data',function(data){
 });
 
 
-var psp_wbuf=new Array(); //write queue
+let psp_wbuf=new Array(); //write queue
 
 ws.reload=function(){
 	var dat=new Uint8Array(2);
@@ -51,11 +62,36 @@ function psp_parse(dat){
 	case 0x20:
 	case 0xe0:
 		switch(dat[1]){
-		case 0:
+		case 0://--------------rom dump
 			ws._client.sendObject({'rom':dat.subarray(2)});
 			break;
-		case 16:
-		case 17:
+		case 1://--------------diagnostic
+		case 2:
+			ws._client.sendObject({'diag':dat.subarray(2)});
+			break;
+		default://--------------graph data
+			let chan=dat[2];
+			let sz=(dat.length-3)/3;
+			let t1=new Int16Array(sz);
+			let w1=new Int16Array(sz);
+			let w2=new Int16Array(sz);
+			let w3=new Int16Array(sz);
+			for(let i=0,p=3,ts=0;i<sz;i++,p+=3){
+				let dt=dat[p]/8192.0;//------dt
+				t1[i]=Math.floor(ts*1000);
+				w1[i]=Math.floor(3.14/dt);//--------angular velocity as radian/sec
+				w2[i]=(dat[1]&1)? dat[p+1]:(dat[p+1]<128? dat[p+1]:dat[p+1]-256)
+				w3[i]=dat[p+2]
+				ts+=dt;
+			}
+			ws._client.sendObject({
+				'graph':{
+					'x':'['+t1.toString()+']',
+					'y1':'['+w1.toString()+']',
+					'y2':'['+w2.toString()+']',
+					'y3':'['+w3.toString()+']'
+				}
+			});
 			break;
 		}
 		break;
